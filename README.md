@@ -1,4 +1,4 @@
-# Django_poll_on_Docker_swarm
+# Django_poll_App_on_Docker_swarm
 in this repository we Deploy Django Poll App on Docker Swarm 
 # what is swarm ?
 is the cluster solution based on docker containter to stablish HA For Containers

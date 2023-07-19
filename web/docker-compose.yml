@@ -1,0 +1,58 @@
+version: "3.9"
+
+services:
+  db:
+    hostname: pollingservicedb
+    image: postgres
+    volumes:
+      - "dbnfs:/var/lib/postgresql/data"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - PGDATA=/var/lib/postgresql/data/db/
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "1.5"
+          memory: "1G"
+        reservations:
+          cpus: "0.5"
+          memory: "512M"
+    networks:
+      pollingservice:
+  web:
+    image: 127.0.0.1:5000/pollingservice:postgres
+    build: .
+    ports:
+      - target: 8000
+        published: 9000
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "1.5"
+          memory: "1G"
+        reservations:
+          cpus: "0.5"
+          memory: "512M"
+    depends_on:
+      - db
+    networks:
+      pollingservice:
+
+volumes:
+  dbnfs:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.0.1,rw
+      device: ":/nfs/db/"
+ 
+networks:
+  pollingservice:
+    ipam:
+      config:
+        - subnet: 192.168.20.0/24
+
